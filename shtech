@@ -1,0 +1,29 @@
+from netmiko import ConnectHandler
+import sys
+
+
+Username = "username"
+Password = "password"
+
+
+ip_add_file = open(r'C:\ping.txt','r') 
+i=1
+for host in ip_add_file:
+    host = host.strip()
+    device = {
+        'device_type' : 'cisco_ios',
+        'username' : Username,
+        'password' : Password,
+        'secret' : Password,
+        'ip' : host,
+        }
+    ssh_connect = ConnectHandler(**device)
+    ssh_connect.enable()
+    ssh_connect.send_command('term len 0')
+    shtech = ssh_connect.send_command('sh tech', delay_factor=3)
+    
+    file_write=open("%s"%str(host),"w+")
+    file_write.write(shtech)
+    i=i+1
+    file_write.close()
+print('Done')
